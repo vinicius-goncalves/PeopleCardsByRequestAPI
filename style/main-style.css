@@ -1,0 +1,144 @@
+*{margin:0;padding:0;box-sizing:border-box;}
+
+:root {
+    --color0: #FFFFFF;
+    --color1: #E7E7F1;
+    --color2: #31B6BF;
+}
+
+body {
+    background-color: var(--color1);
+    font-family: Helvetica, Arial, sans-serif;
+}
+
+header h1 {
+    margin-top: 25px;
+    text-align: center;
+}
+
+main #people-container-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 90vh;
+}
+
+ul {
+    list-style-type: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+#prev-and-next-nuttons-container {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    padding: 25px;
+}
+
+#prev-and-next-nuttons-container button {
+    width: 250px;
+    padding: 15px;
+    background-color: #dc143c;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+#prev-and-next-nuttons-container button:active {
+    animation: bounce .25s 1;
+}
+
+@keyframes bounce {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+        box-shadow: 1px 1px 33px rgba(0, 0, 0, 0.295);
+    }
+
+     100% {
+         transform: scale(1);
+     }
+}
+
+.person-profile {
+    width: 400px;
+    height: 600px;
+    background-color: var(--color0);
+    margin: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    box-shadow: 1px 1px 25px rgba(0, 0, 0, 0.014);
+}
+
+.person-lore {
+    margin: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.person-image {
+    border-radius: 50%;
+}
+
+.person-name {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-weight: 800;
+}
+
+.person-email {
+    font-weight: lighter;
+    color: #797979;
+}
+
+.more-details {
+    width: 200px;
+    height: 60px;
+    color: white;
+    border: none;
+    box-shadow: 1px 1px 25px rgba(0, 0, 0, .250);
+    background-color: #dc143c;
+    transition: background-color 1s, width 1s, border-radius 1s;
+    cursor: pointer;
+}
+
+.buttons {
+    position: relative;
+}
+
+.icon {
+    position: absolute;
+    right: 34%;
+    bottom: 28%;
+    color: white;
+    opacity: 0;
+}
+
+.more-details i {
+    transition: opacity .5s;
+}
+
+.more-details:focus {
+    background-color: #2fb42f;
+    width: calc(250px / 4);
+    border-radius: 50%;
+}
+
+.more-details:focus .text {
+    opacity: 0;
+}
+
+.more-details:focus .icon {
+    opacity: 1;
+    transition-delay: .30s;
+}

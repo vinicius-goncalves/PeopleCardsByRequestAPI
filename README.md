@@ -1,4 +1,4 @@
-![](https://img.shields.io/badge/version-1.0.1-green)
+![](https://img.shields.io/badge/version-1.0.1-informational)
 
 # PeopleCardsByRequestAPI
 

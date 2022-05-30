@@ -1,107 +1,77 @@
-const url = (pageNumber) => {
-    return `https://reqres.in/api/users?page=${pageNumber}`
-} 
+//
+// ! How the ReqresAPI only have two examples pages, I made the app with this logic that you can see
+// 
 
 const peopleContainer = document.querySelector('[data-js="js-people-container"]')
 const personLoreContainer = document.querySelector('[data-js="js-person-lore"]')
-
 const prevAndNextButtonsContainer = document.querySelector('#prev-and-next-nuttons-container')
+const loaderContainer = document.querySelector('#loader-container')
 
-let pages = 1
+window.addEventListener('load', () => {
+    setTimeout(() => {
+        loaderContainer.style.display = 'none'
+    }, 1.5 * 1000)
+})
 
-const copyContentDetials = personId => {
-    fetch(url()).then(response => {
-        return response.json()
-    }).then(peopleInformations => {
-        const data = peopleInformations.data
-        const idFound = data[personId - 1]
-        const firstName = idFound.first_name
-        const lastName = idFound.last_name
-        const email = idFound.email
-        
-        const dataArray = [personId, firstName, lastName, email].join(', ')
-        return navigator.clipboard.writeText(dataArray)
-    })
+const url = (searchPage) => {
+    return `https://reqres.in/api/users?page=${searchPage}`
 }
 
-const fetchMoreResults = (page) => {
-    fetch(`${url(page)}`).then(response => {
-        return response.json()
-    }).then(peopleInformations => {
-            peopleContainer.innerHTML = peopleInformations.data.map((person) => {
-            const id = person.id
-            const firstName = person.first_name
-            const lastName = person.last_name
-            const email = person.email
-            const avatar = `https://reqres.in/img/faces/${id}-image.jpg`
+const copyContentDetails = (id, first_name) => {
+    const dataArray = [id, first_name].join(', ')
+    return navigator.clipboard.writeText(dataArray)
+}
 
-            return `<li class="person-profile" data-user="${id}">
+const insertIntoHTML = dataReceived => {
+    
+    peopleContainer.innerHTML = dataReceived.data.map((person) => {
+
+        const { id, first_name, last_name, email } = person
+        const peopleDetails = [id, first_name, last_name, email].join(', ')
+
+        const avatar = `https://reqres.in/img/faces/${id}-image.jpg`
+
+        return `<li class="person-profile" data-user="${id}">
                 <img src="${avatar}" class="person-image"></img>
                 <div class="person-lore" data-js="js-person-lore">
                     <h1 data-id="person-id">${id}</h1>
-                    <h1 class="person-name">${firstName} ${lastName}</h1>
+                    <h1 class="person-name">${first_name} ${last_name}</h1>
                     <h1 class="person-email">${email}</h1>
                 </div>
                 <div class="buttons">
-                    <button type="button" class="more-details" onclick="copyContentDetials(${id})">
+                    <button type="button" class="more-details" onclick="navigator.clipboard.writeText('${peopleDetails}')">
                         <span class="text">Copy user details</span>
                         <i class="material-icons icon">check</i>
                     </button>
                 </div>
             </li>`
-        }).join('')
-
-        let pages = 1
-        if(peopleInformations.page != peopleInformations.total_pages) {
-            pages++
-            prevAndNextButtonsContainer.innerHTML = `<button id="next" onclick="fetchMoreResults(${pages})">See more people</button>`
-        } else {
-            prevAndNextButtonsContainer.innerHTML = `<button id="prev" onclick="fetchMoreResults(${--pages})">Previous</button>`
-        }
     })
+
+    const totalPagesVerify = dataReceived.page != dataReceived.total_pages
+    prevAndNextButtonsContainer.innerHTML = 
+    `${totalPagesVerify 
+        ? 
+        `<button id="next" onclick="fetchMoreResults(2)">See more people</button>` 
+        : 
+        `<button id="next" onclick="fetchMoreResults(1)">Previous</button>`}`
+
 }
 
-const fecthUserData = () => {
-    fetch(url(1))
-    .then(response => {
-        return response.json()
-    }).then(peopleInformations => {
+const fetchMoreResults = async (pageIndex) => {
+    document.documentElement.scrollTop = 0
 
-        console.log(peopleInformations.total_pages)
-        console.log(peopleInformations)
-        console.log(peopleInformations.page != peopleInformations.total_pages)
+    const responseRequest = await fetch(url(pageIndex))
+    const dataReceived = await responseRequest.json()
 
-        peopleContainer.innerHTML = peopleInformations.data.map((person) => {
-            const id = person.id
-            const firstName = person.first_name
-            const lastName = person.last_name
-            const email = person.email
-            const avatar = `https://reqres.in/img/faces/${id}-image.jpg`
-
-            return `<li class="person-profile" data-user="${id}">
-                <img src="${avatar}" class="person-image"></img>
-                <div class="person-lore" data-js="js-person-lore">
-                    <h1 data-id="person-id">${id}</h1>
-                    <h1 class="person-name">${firstName} ${lastName}</h1>
-                    <h1 class="person-email">${email}</h1>
-                </div>
-                <div class="buttons">
-                    <button type="button" class="more-details" onclick="copyContentDetials(${id})">
-                        <span class="text">Copy user details</span>
-                        <i class="material-icons icon">check</i>
-                    </button>
-                </div>
-            </li>`
-        })
-        
-        let pages = 1
-        if(peopleInformations.page != peopleInformations.total_pages) {
-            pages++
-            prevAndNextButtonsContainer.innerHTML = `<button id="next" onclick="fetchMoreResults(${pages})">See more people</button>`
-        } else {
-            prevAndNextButtonsContainer.innerHTML = `<button id="prev" onclick="fetchMoreResults(${--pages})">Previous</button>`
-        }
-    })
+    insertIntoHTML(dataReceived)
 }
 
-fecthUserData()
+const fecthUserData = async (pageIndex) => {
+
+    const responseRequest = await fetch(url(pageIndex))
+    const dataReceived = await responseRequest.json()
+
+    insertIntoHTML(dataReceived)
+}
+
+fecthUserData(1)
